@@ -25,7 +25,7 @@
 .teacher-item header div strong {
     font: 700 2.4rem Archivo;
     display: block;
-    color: var(--color-text-title);
+    color: var(--color-text-title)
 }
 
 .teacher-item header div span {
@@ -56,8 +56,8 @@
     display: block;
 }
 
-.teacher-item footer button {
-    width: 20rpm;
+.teacher-item footer a {
+    width: 20rem;
     height: 5.6rem;
     background: var(--color-secondary);
     color: var(--color-button-text);
@@ -68,16 +68,13 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    transition: 0.2s;
-}
-
-.teacher-item footer button:hover {
-    background: var(--color-secondary-dark);
+    text-decoration: none;
+    outline: none;
 }
 
 @media (min-width: 700px) {
     .teacher-item header, .teacher-item footer {
-        padding: 3.2rpm;
+        padding: 3.2rem;
     }
     .teacher-item>p {
         padding: 0 3.2rem;
@@ -86,12 +83,12 @@
         display: initial;
         margin-left: 1.6rem;
     }
-    .teacher-item footer button {
+    .teacher-item footer a {
         width: 24.5rem;
         font-size: 1.6rem;
         justify-content: center;
     }
-    .teacher-item footer button img {
+    .teacher-item footer a img {
         margin-right: 1.6rem;
     }
 }
