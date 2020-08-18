@@ -1,49 +1,108 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import styles from './styles';
-import { View, Image, Text } from 'react-native';
+import { View, Image, Text, Linking } from 'react-native';
 
 
-import favoriteButtonIcon from '../../assets/images/icons/heart-outline.png'
+import heartOutlineIcon from '../../assets/images/icons/heart-outline.png'
 import unfavoriteButtonIcon from '../../assets/images/icons/unfavorite.png'
 import whatsappIcon from '../../assets/images/icons/whatsapp.png'
 import { RectButton } from 'react-native-gesture-handler';
+import api from '../../services/api';
+import AsyncStorage from '@react-native-community/async-storage';
 
-function TeacherItem() {
+
+export interface Teacher {
+    id: number;
+    avatar: string;
+    bio: string;
+    cost: number;
+    name: string;
+    subject: string;
+    whatsapp: string;
+}
+
+export interface TeacherItemProps {
+    teacher: Teacher;
+    favorited: boolean;
+}
+
+
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, favorited }) => {
+
+    const [isFavorited, setIsFavorited] = useState(favorited);
+
+
+    function handleLinkToWhatsapp() {
+        api.post('connections', {
+            user_id: teacher.id,
+        });
+
+        Linking.openURL(`whatsapp://send?phone=55${teacher.whatsapp}`);
+
+    }
+
+    async function handleToggleFavorite() {
+        const favorites = await AsyncStorage.getItem('favorites');
+
+        let favoritesArray = [];
+
+        if (favorites) {
+            favoritesArray = JSON.parse(favorites);
+        }
+
+        if (isFavorited) {
+            const favoritedIndex = favoritesArray.findIndex((teacherItem: Teacher) => {
+                return teacherItem.id === teacher.id
+            });
+
+            favoritesArray.splice(favoritedIndex, 1);
+            setIsFavorited(false);
+        } else {
+            favoritesArray.push(teacher);
+            setIsFavorited(true);
+        }
+
+        await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray))
+
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.profile}>
-                <Image style={styles.avatar} source={{ uri: "https://avatars0.githubusercontent.com/u/20431901?s=460&u=7763a7fe255afe73043c8e2c92d2684fac835e5a&v=4" }} />
+                <Image style={styles.avatar} source={{ uri: teacher.avatar }} />
 
                 <View style={styles.profileInfo}>
-                    <Text style={styles.name}>Rafael</Text>
-                    <Text style={styles.subject}>Computação</Text>
+                    <Text style={styles.name}>{teacher.name}</Text>
+                    <Text style={styles.subject}>{teacher.subject}</Text>
                 </View>
             </View>
 
             <Text style={styles.bio}>
-                Bio
+                {teacher.bio}
             </Text>
 
             <View style={styles.footer}>
                 <Text style={styles.price}>
                     Preço/Hora {'   '}
-                    <Text style={styles.priceValue}>R$ 100</Text>
+                    <Text style={styles.priceValue}>R$ {teacher.cost}</Text>
                 </Text>
             </View>
 
             <View style={styles.buttonsContainer}>
-                <RectButton
+                <RectButton onPress={handleToggleFavorite}
                     style={[
                         styles.favoriteButton,
-                        styles.favorited]
+                        isFavorited ? styles.favorited : styles.unfavorited]
                     }>
-                    {<Image source={favoriteButtonIcon} />}
+                    {isFavorited ? <Image source={unfavoriteButtonIcon} /> :
+                        <Image source={heartOutlineIcon} />}
 
 
                 </RectButton>
 
-                <RectButton style={styles.contactButton}>
+                <RectButton onPress={handleLinkToWhatsapp} style={styles.contactButton}>
                     <Image source={whatsappIcon} />
                     <Text style={styles.contactButtonText}>Entrar em contato</Text>
                 </RectButton>

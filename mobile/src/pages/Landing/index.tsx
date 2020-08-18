@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
 
 import styles from './styles';
@@ -25,13 +25,13 @@ function Landing() {
 
     const [totalConnections, setTotalConnections] = useState(0);
 
-    useEffect(() => {
+    useFocusEffect(() => {
         api.get('connections').then(response => {
             const { total } = response.data;
 
             setTotalConnections(total);
         })
-    }, [totalConnections]);
+    });
 
     return (
         <View style={styles.container}>

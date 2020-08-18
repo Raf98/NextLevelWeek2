@@ -83,6 +83,10 @@ const styles = StyleSheet.create({
         marginRight: 8
     },
 
+    unfavorited: {
+        marginLeft: 8
+    },
+
     favorited: {
         backgroundColor: '#e33d3d',
         marginLeft: 8
